@@ -18,18 +18,19 @@ Dingtalk OAuth API documentation: https://open.dingtalk.com/document/orgapp-serv
 
 ### Build docker image with plugin from answer base image
 
-```bash
-
+```Dockerfile
 FROM apache/answer as answer-builder
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 RUN apk --no-cache add \
     build-base git bash nodejs npm go && \
     npm install -g pnpm
 
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+
 RUN answer build \
-    --with github.com/apache/incubator-answer-plugins/connector-basic \
-    --with github.com/apache/incubator-answer-plugins/storage-s3 \
-    --with github.com/apache/incubator-answer-plugins/search-elasticsearch \
+    --with github.com/xbmlz/incubator-answer-plugin-connector-dingtalk \
     --output /usr/bin/new_answer
 
 FROM alpine
@@ -60,7 +61,6 @@ RUN chmod 755 /entrypoint.sh
 VOLUME /data
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]
-
 ```
 
 You can update the --with parameter to add more plugins that you need.
