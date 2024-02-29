@@ -2,7 +2,7 @@ plugin:
   dingtalk_connector:
     backend:
       name:
-        other: Dingtalk
+        other: 钉钉
       info:
         name:
           other: 钉钉连接器

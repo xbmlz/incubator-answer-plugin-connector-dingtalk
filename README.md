@@ -12,7 +12,7 @@
 - `ClientID` - Dingtalk OAuth client ID
 - `ClientSecret` - Dingtalk OAuth client secret
 
-Authorization callback URL as https://example.com/answer/api/v1/connector/redirect/github
+Authorization callback URL as https://example.com/answer/api/v1/connector/redirect/dingtalk
 
 Dingtalk OAuth API documentation: https://open.dingtalk.com/document/orgapp-server/use-dingtalk-account-to-log-on-to-third-party-websites-1
 
@@ -38,6 +38,8 @@ LABEL maintainer="linkinstar@apache.org"
 
 ARG TIMEZONE
 ENV TIMEZONE=${TIMEZONE:-"Asia/Shanghai"}
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
 
 RUN apk update \
     && apk --no-cache add \
