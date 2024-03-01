@@ -73,13 +73,6 @@ func (g *Connector) ConnectorSlugName() string {
 }
 
 func (g *Connector) ConnectorSender(ctx *plugin.GinContext, receiverURL string) (redirectURL string) {
-	// https://login.dingtalk.com/oauth2/auth?
-	// redirect_uri=xxxx
-	// &response_type=code
-	// &client_id=dingxxxxxxx
-	// &scope=openid
-	// &state=dddd
-	// &prompt=consent
 	return fmt.Sprintf("%s?redirect_uri=%s&response_type=code&client_id=%s&scope=Contact.User.Read&state=state&prompt=consent",
 		DINGTALK_AUTHORIZE_URL, receiverURL, g.Config.ClientID)
 }
@@ -99,16 +92,16 @@ func (g *Connector) ConnectorReceiver(ctx *plugin.GinContext, receiverURL string
 	}
 	token, err := getToken(DINGTALK_TOKEN_URL, tokenReq)
 	if err != nil {
+		fmt.Println("get token failed:", err)
 		return plugin.ExternalLoginUserInfo{}, err
 	}
-	fmt.Println("token:", token)
 
 	// 3. get user info
 	user, err := getUserInfo(DINGTALK_USER_JSON_URL, token)
 	if err != nil {
+		fmt.Println("get user info failed:", err)
 		return plugin.ExternalLoginUserInfo{}, err
 	}
-	fmt.Println("user:", user)
 	return user, nil
 }
 
@@ -164,11 +157,17 @@ func getUserInfo(url string, token string) (userInfo plugin.ExternalLoginUserInf
 		return plugin.ExternalLoginUserInfo{}, err
 	}
 
+	email := resp.Email
+
+	if email == "" {
+		email = "example@dingtalk.com"
+	}
+
 	userInfo = plugin.ExternalLoginUserInfo{
 		ExternalID:  resp.OpenID,
 		DisplayName: resp.Nick,
 		Username:    resp.Nick,
-		Email:       resp.Email,
+		Email:       email,
 		Avatar:      resp.AvatarUrl,
 		MetaInfo:    "",
 	}
