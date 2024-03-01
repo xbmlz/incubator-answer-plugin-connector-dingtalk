@@ -172,6 +172,8 @@ func getUserInfo(url string, token string) (userInfo plugin.ExternalLoginUserInf
 		MetaInfo:    "",
 	}
 
+	fmt.Println("userInfo:", userInfo)
+
 	return userInfo, nil
 }
 
