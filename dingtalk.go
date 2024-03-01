@@ -160,7 +160,7 @@ func getUserInfo(url string, token string) (userInfo plugin.ExternalLoginUserInf
 	email := resp.Email
 
 	if email == "" {
-		email = "example@dingtalk.com"
+		email = fmt.Sprintf("%s@dingtalk.com", resp.OpenID)
 	}
 
 	userInfo = plugin.ExternalLoginUserInfo{
